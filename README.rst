@@ -1,7 +1,6 @@
 .. figure:: https://butterflynet.veriny.tf/bnet.png
    :alt: ButterflyNet - Drawn by Tudor Iacobescu
 
-
 |Build Status| |PyPI version|
 |https://img.shields.io/pypi/l/ButterflyNet.svg|
 |https://img.shields.io/pypi/dw/ButterflyNet.svg|
@@ -24,7 +23,7 @@ ButterflyNet was designed for a few main reasons:
 
 -  Sockets are low-level; personally, I dislike them because they're not
    the friendliest thing to use.
--  Twisted is a clusterfuck.
+-  Twisted has a steep learning curve, and has a lot of cruft.
 -  asyncio networking is good, but it's very hands-off - ButterflyNet
    comes with everything needed for a full networking suite.
 

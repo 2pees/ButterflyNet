@@ -10,7 +10,7 @@ Because of the heavy usage of asyncio, this module does not officially support P
 ButterflyNet was designed for a few main reasons:
   
   - Sockets are low-level; personally, I dislike them because they're not the friendliest thing to use.
-  - Twisted is a clusterfuck.
+  - Twisted has a steep learning curve, and has a lot of cruft.
   - asyncio networking is good, but it's very hands-off - ButterflyNet comes with everything needed for a full networking suite.
   
 All the existing libraries are not, by design, secure. You can work around this with SSLContexts - however, ButterflyNet forces TLS with secure settings on your server by default.
