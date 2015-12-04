@@ -17,7 +17,7 @@ setup(
     description='A better networking library.',
     classifiers=[
         "Development Status :: 4 - Beta",
-        "License :: OSI Approved :: GNU Lesser General Public License v3",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
