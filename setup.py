@@ -8,16 +8,16 @@ if not os.environ.get("CIRCLE_USERNAME", None):
 
 setup(
     name='ButterflyNet',
-    version='1.0.0',
+    version='1.0.1',
     packages=['bfnet'],
     url='https://butterflynet.veriny.tf',
-    license='AGPLv3',
+    license='LGPLv3',
     author='Isaac Dickinson',
     author_email='eyesismine@gmail.com',
     description='A better networking library.',
     classifiers=[
         "Development Status :: 4 - Beta",
-        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "License :: OSI Approved :: GNU Lesser General Public License v3",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",

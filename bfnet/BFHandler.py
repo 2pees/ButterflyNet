@@ -57,7 +57,6 @@ class ButterflyHandler(object):
             self._ssl = ssl_context
 
         self._bufsize = buffer_size
-
         self.default_butterfly = Butterfly
         self.default_net = Net
 
@@ -193,7 +192,11 @@ class ButterflyHandler(object):
         Do not touch.
         :param ssl_options: The SSL options to use.
         """
-        self._ssl.load_cert_chain(certfile=ssl_options[0], keyfile=ssl_options[1], password=ssl_options[2])
+        try:
+            self._ssl.load_cert_chain(certfile=ssl_options[0], keyfile=ssl_options[1], password=ssl_options[2])
+        except IOError as e:
+            self.logger.error("Unable to load certificate files: {}".format(e))
+            sys.exit(11)
 
     @classmethod
     def get_handler(cls, loop: asyncio.AbstractEventLoop, ssl_context: ssl.SSLContext=None,
