@@ -8,8 +8,8 @@ if not os.environ.get("CIRCLE_USERNAME", None):
 
 setup(
     name='ButterflyNet',
-    version='1.0.1',
-    packages=['bfnet'],
+    version='1.0.1.post1',
+    packages={'bfnet', 'bfnet.packets'},
     url='https://butterflynet.veriny.tf',
     license='LGPLv3',
     author='Isaac Dickinson',
