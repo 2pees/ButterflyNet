@@ -86,7 +86,10 @@ class ButterflyHandler(object):
             bf[1].cancel()
             # Cancel the Butterfly.
             bf[0].stop()
-        self.net.stop()
+        try:
+            self.net.stop()
+        except AttributeError:
+            pass
         self._event_loop.stop()
 
     @asyncio.coroutine
@@ -117,7 +120,6 @@ class ButterflyHandler(object):
         s = "{}:{}".format(butterfly.ip, butterfly.client_port)
         if s in self.butterflies:
             bf = self.butterflies.pop(s)
-            print(bf)
             # These are here by default - don't call super() if you modify the butterfly dict!
             assert isinstance(bf, tuple)
             assert len(bf) == 2
@@ -196,7 +198,7 @@ class ButterflyHandler(object):
             self._ssl.load_cert_chain(certfile=ssl_options[0], keyfile=ssl_options[1], password=ssl_options[2])
         except IOError as e:
             self.logger.error("Unable to load certificate files: {}".format(e))
-            sys.exit(11)
+            self.stop()
 
     @classmethod
     def get_handler(cls, loop: asyncio.AbstractEventLoop, ssl_context: ssl.SSLContext=None,

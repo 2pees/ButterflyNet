@@ -1,6 +1,7 @@
 import socket
 import ssl
 import struct
+import msgpack
 
 # Open a new SSL socket
 size = 1024
@@ -12,11 +13,11 @@ s.connect(("127.0.0.1", 8001))
 
 while True:
     to_send = input("> ")
-    to_send_pak = struct.pack("!2shhh{}s".format(len(to_send)), "BF".encode(), 1, 0, len(to_send), to_send.encode())
+    to_send_pak = msgpack.packb({"id": 2, "data": {"echo": "hello world!"}}, use_bin_type=True)
 
     s.write(to_send_pak)
-    data = s.recv(size).decode()
-    print(data)
+    data = s.recv(size)
+    print(msgpack.unpackb(data, encoding="UTF-8"))
 
 
 s.close()

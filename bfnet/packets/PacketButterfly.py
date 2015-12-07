@@ -1,7 +1,7 @@
 import asyncio
 import struct
 from bfnet.Butterfly import AbstractButterfly
-
+import msgpack
 
 class PacketButterfly(AbstractButterfly):
     """
@@ -31,33 +31,33 @@ class PacketButterfly(AbstractButterfly):
         :param data: The data to parse in.
         """
         self.logger.debug("Recieved new packet, deconstructing...")
-        if len(data) < 6:
-            self.logger.error("Invalid packet recieved, dropping client.")
-            self.stop()
-            return
-        # Decode the header.
-        header = data[0:6]
         try:
-            magic, version, id = self.unpacker.unpack(header)
-        except struct.error as e:
-            self.logger.error("Failure unpacking packet header: {}".format(e.args))
-            self.stop()
+            data = msgpack.unpackb(data, encoding="utf-8")
+        except (msgpack.UnpackException, ValueError) as e:
+            self.logger.error("Unable to unpack data: {}".format(e))
+            self._transport.close()
             return
-        # Check header.
-        if magic != b"BF":
-            self.logger.error("Recieved unknown packet with magic number {}".format(magic.decode()))
-            self.stop()
+        if not 'id' in data:
+            self.logger.error("ID not in packet data, skipping packet")
+            self._transport.close()
             return
-        self.logger.debug("Packet version {}, id {}".format(version, id))
-        # Get the packet, if possible.
-        if id in self._handler.packet_types:
-            packet_type = self._handler.packet_types[id]
-            packet = packet_type(self)
-            created = packet.create(data[6:])
+        self.logger.debug("New packet: ID {}, version {}".format(data["id"], data.get("version", "unknown")))
+        try:
+            packet_type = self.handler.packet_types[data['id']]
+        except KeyError:
+            self.logger.error("ID not valid for current handler.")
+            self._transport.close()
+            return
+        packet = packet_type(self)
+        if not 'data' in data:
+            self.logger.error("No data field in packet, skipping data")
+            self._transport.close()
+            return
+        else:
+            created = packet.create(data['data'])
             if created:
                 self._loop.create_task(self.packet_queue.put(packet))
-        else:
-            self.logger.warning("Recieved unknown packet ID: {}".format(id))
+            self.logger.debug("Created new packet")
 
     def connection_lost(self, exc):
         class FakeQueue(object):
@@ -82,5 +82,5 @@ class PacketButterfly(AbstractButterfly):
         Write a packet to the client.
         :param pack: The packet to write. This will automatically add a header.
         """
-        header = self.unpacker.pack(b"BF", 1, pack.id)
-        self._transport.write(header + pack.gen())
+        packed = msgpack.packb({"id": pack.id, "data": pack.gen()}, use_bin_type=True)
+        self._transport.write(packed)

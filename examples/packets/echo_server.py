@@ -30,16 +30,14 @@ class Packet0Echo(Packet):
     def __init__(self, pbf):
         super().__init__(pbf)
         # Set our attributes.
-        self.echo_length = 0
         self.data_to_echo = ""
 
 
-    def unpack(self, data: bytes):
+    def unpack(self, data: dict):
         """
         Unpack the packet.
         """
-        self.echo_length = struct.unpack("!h", data[0:2])[0]
-        self.data_to_echo = struct.unpack("!{}s".format(self.echo_length), data[2:])[0]
+        self.data_to_echo = data["echo"]
         return True
 
 
@@ -47,7 +45,7 @@ class Packet0Echo(Packet):
         """
         Pack a new packet.
         """
-        return self.autopack()
+        return {"echo": self.data_to_echo}
 
 
 @asyncio.coroutine

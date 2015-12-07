@@ -89,9 +89,9 @@ class Packet(BasePacket):
         :return:
         """
         super().__init__(pbf)
-        self._original_data = b""
+        self._original_data = {}
 
-    def create(self, data: bytes) -> bool:
+    def create(self, data: dict) -> bool:
         """
         Create a new Packet.
         :param data: The data to use.
@@ -102,7 +102,7 @@ class Packet(BasePacket):
         self.unpack(data)
         return True
 
-    def unpack(self, data: bytes) -> bool:
+    def unpack(self, data: dict) -> bool:
         """
         Unpack the data for the packet.
         :return: A boolean, if it was unpacked.
